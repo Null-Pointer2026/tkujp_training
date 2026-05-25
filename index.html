@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="ja" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本研修プログラム 募集特設サイト</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&amp;family=Zen+Maru+Gothic:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Noto Sans JP', sans-serif; margin: 0; }
+    
+    /* 核心動畫與排版 */
+    .card-enter { opacity: 0; transform: translateY(30px); }
+    .card-visible { opacity: 1; transform: translateY(0); transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    .timeline-line { width: 3px; }
+    .dot-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(74, 144, 217, 0); } }
+    
+    /* 浪漫飄雪特效 */
+    .snow { position: absolute; top: -10px; animation: fall linear infinite; pointer-events: none; opacity: 0.7; z-index: 0; }
+    @keyframes fall { to { transform: translateY(120vh); } }
+    
+    /* 卡片懸浮升起效果 */
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+    .hover-lift { transition: transform 0.3s, box-shadow 0.3s; }
+    
+    /* 頁面流暢切換控制 */
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* 日程表專用樣式 */
+    .calendar-table th, .calendar-table td { border: 1px solid #e2e8f0; text-align: center; padding: 10px 6px; }
+    .calendar-table th { background-color: #f8fafc; color: #334155; font-weight: 600; }
+  </style>
+ </head>
+ <body class="h-full bg-slate-900 text-gray-100">
+
+  <!-- ================================================================= -->
+  <!-- 1. トップページ（大学選択画面） -->
+  <!-- ================================================================= -->
+  <div id="page-home" class="page-section active min-h-full flex flex-col justify-center items-center relative px-4 py-16" style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%);">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent pointer-events-none"></div>
+    
+    <header class="text-center mb-12 relative z-10">
+      <span class="text-6xl mb-4 block">✈️</span>
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" style="font-family: 'Zen Maru Gothic', sans-serif;">日本研修プログラム募集</h1>
+      <p class="text-lg text-gray-300 max-w-xl mx-auto">あなたに合った留学先を、2つの魅力的な大学から選んでみませんか？</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full relative z-10">
+      
+      <!-- 玉川大学カード -->
+      <div onclick="showPage('page-tamagawa')" class="hover-lift cursor-pointer bg-gradient-to-br from-emerald-800/80 to-teal-950/90 backdrop-blur border border-emerald-500/30 rounded-2xl p-8 flex flex-col justify-between text-left h-80 relative overflow-hidden group">
+        <div class="absolute -right-8 -bottom-8 text-9xl opacity-10 group-hover:opacity-20 transition-opacity">🌳</div>
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs border border-emerald-500/40">東京都町田市</span>
+            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs border border-amber-500/40">リベラルアーツ</span>
+          </div>
+          <h2 class="text-3xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">玉川大学</h2>
+          <p class="text-gray-200 text-sm leading-relaxed">日本初の文理融合教育。人間・社会・文化・STEAMをクロスオーバーする「ダブルフィールド制」と、東京を舞台にした実践的なオフキャンパス学習が魅力です。</p>
+        </div>
+        <div class="flex items-center text-emerald-400 font-semibold text-sm mt-4">
+          プログラム詳細を見る <i data-lucide="arrow-right" class="ml-1 w-4 h-4"></i>
+        </div>
+      </div>
+
+      <!-- 秋田国際教養大学カード -->
+      <div onclick="showPage('page-aiu')" class="hover-lift cursor-pointer bg-gradient-to-br from-blue-900/80 to-slate-950/90 backdrop-blur border border-blue-500/30 rounded-2xl p-8 flex flex-col justify-between text-left h-80 relative overflow-hidden group">
+        <div class="absolute -right-8 -bottom-8 text-9xl opacity-10 group-hover:opacity-20 transition-opacity">❄️</div>
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs border border-blue-500/40">秋田県秋田市</span>
+            <span class="px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-xs border border-sky-500/40">冬期・日本語・自然</span>
+          </div>
+          <h2 class="text-3xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">秋田国際教養大学</h2>
+          <p class="text-gray-200 text-sm leading-relaxed">美しい雪景色に包まれたキャンパス。国際的な環境の中、大学院生たちと深く密度の高い日本語学習と伝統文化を体験できます。</p>
+        </div>
+        <div class="flex items-center text-blue-400 font-semibold text-sm mt-4">
+          プログラム詳細を見る <i data-lucide="arrow-right" class="ml-1 w-4 h-4"></i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================================================================= -->
+  <!-- 2. 玉川大学 詳細ページ -->
+  <!-- ================================================================= -->
+  <div id="page-tamagawa" class="page-section w-full h-full overflow-auto relative min-h-full" style="background: linear-gradient(135deg, #0b251a 0%, #143d2c 40%, #1f573f 70%, #2e7556 100%);">
+    
+    <!-- トップに戻る -->
+    <div class="max-w-3xl mx-auto pt-6 px-4 relative z-10">
+      <button onclick="showPage('page-home')" class="flex items-center gap-2 px-4 py-2 bg-black/30 hover:bg-black/50 text-white rounded-xl border border-white/10 transition-colors text-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> トップへ戻る
+      </button>
+    </div>
+
+    <!-- Hero -->
+    <header class="relative z-10 text-center py-12 px-4">
+      <div class="inline-block mb-4"><span class="text-5xl">🌳</span></div>
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">玉川大学リベラルアーツ学部</h1>
+      <p class="text-lg md:text-xl text-emerald-200 font-light">複眼的な視野と実践力を育む、日本初の融合教育</p>
+      <div class="mt-6 flex justify-center gap-2">
+        <span class="px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-sm border border-white/20">🏫 全人教育</span> 
+        <span class="px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-sm border border-white/20">🧩 ダブルフィールド制</span> 
+        <span class="px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-sm border border-white/20">🏃 オフキャンパス学習</span>
+      </div>
+    </header>
+
+    <!-- 特色紹介 -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-10">
+      <div class="bg-white/90 backdrop-blur rounded-2xl p-8 shadow-lg text-gray-800">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">✨</span>
+          <h2 class="text-2xl font-bold text-gray-800" style="font-family: 'Zen Maru Gothic', sans-serif;">学部の特色と学びの基盤</h2>
+        </div>
+        <div class="space-y-4 text-sm leading-relaxed text-gray-700">
+          <p class="text-base font-semibold text-emerald-700">「山にすそ野があるように、幅広く学んでから専門を深める」</p>
+          <div class="border-l-4 border-emerald-500 pl-4 py-2 bg-emerald-50 rounded">
+            <p>現代の複雑な社会課題を解決するため、幅広い教養と専門性を結びつけます。「人間」「社会」「文化」「STEAM」の4つの領域をクロスオーバーし、自らの興味に合わせた柔軟なカリキュラムを構築できます。</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-600 w-4 h-4 flex-shrink-0"></i><span>学内ツアー＆オリエンテーション</span></div>
+            <div class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-600 w-4 h-4 flex-shrink-0"></i><span>玉川生との共同日本語クラス</span></div>
+            <div class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-600 w-4 h-4 flex-shrink-0"></i><span>都內見学＆日本食・伝統文化体験</span></div>
+            <div class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-600 w-4 h-4 flex-shrink-0"></i><span>自由行動による発表テーマの探究</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 【新規追加】玉川大学 研修日程カレンダー (image_bb69e5.pngより) -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-10">
+      <div class="bg-white/95 backdrop-blur rounded-2xl p-6 shadow-xl text-gray-800">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl">📅</span>
+          <h2 class="text-xl font-bold text-gray-800" style="font-family: 'Zen Maru Gothic', sans-serif;">★ 研修イメージ（スケジュール） ★</h2>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs calendar-table border-collapse min-w-[600px]">
+            <thead>
+              <tr>
+                <th class="w-[12%] bg-emerald-800 text-white border-emerald-700">日程</th>
+                <th class="w-[22%]">午前 (9:00〜 / 10:00〜)</th>
+                <th class="w-[22%]">昼前後 (11:00〜 / 12:00〜)</th>
+                <th class="w-[22%]">午後 (13:00〜 / 14:00〜 / 15:00〜)</th>
+                <th class="w-[22%]">夕方・夜 (16:00〜 / 17:00〜 / 18:00〜)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold bg-emerald-50">6/29 (月)</td>
+                <td class="text-gray-400">-</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-orange-50 text-orange-800 font-semibold">オリエンテーション (13時〜)</td>
+                <td class="text-gray-400">-</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">6/30 (火)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-orange-50 text-orange-800 font-semibold">学内ツアー (11時〜)</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (15時〜)</td>
+                <td class="bg-yellow-50 text-amber-800 font-semibold">歓迎会 (18時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/1 (水)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (11時〜)</td>
+                <td class="bg-emerald-50 text-emerald-800 font-medium" colspan="2">自由行動：発表テーマを深める (13時〜18時)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/2 (木)</td>
+                <td class="text-gray-400">-</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (13時〜)</td>
+                <td class="bg-emerald-100 text-emerald-900 font-semibold">日本語：玉川共同 (15時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/3 (金)</td>
+                <td class="bg-sky-100 text-sky-900 font-semibold">学部講義参加 (10時〜)</td>
+                <td class="text-gray-400">-</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-yellow-50 text-amber-800 font-semibold">書道体験 (16時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-amber-50 text-orange-700">7/4 (土)</td>
+                <td class="bg-orange-50 text-orange-800 font-semibold" colspan="2">都内見学 (9時〜14時)</td>
+                <td class="bg-emerald-50 text-emerald-800 font-medium" colspan="2">発表のための取材 (14時〜18時)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-rose-50 text-rose-700">7/5 (日)</td>
+                <td class="bg-emerald-50 text-emerald-800 font-medium" colspan="4">自由行動：発表テーマを深める (9時〜18時)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/6 (月)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (11時〜)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-emerald-100 text-emerald-900 font-semibold">日本語：玉川共同 (16時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/7 (火)</td>
+                <td class="bg-yellow-50 text-amber-800 font-semibold" colspan="2">日本食体験 (9時〜13時)</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (15時〜)</td>
+                <td class="text-gray-400">-</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/8 (水)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (11時〜)</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (15時〜)</td>
+                <td class="bg-yellow-50 text-amber-800 font-semibold">茶道体験 (16時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/9 (木)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (11時〜)</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (15時〜)</td>
+                <td class="bg-yellow-50 text-amber-800 font-semibold">送別会 (17時〜)</td>
+              </tr>
+              <tr>
+                <td class="font-bold bg-emerald-50">7/10 (金)</td>
+                <td class="text-gray-400">-</td>
+                <td class="bg-blue-50 text-blue-800">日本語 (11時〜)</td>
+                <td class="bg-slate-100 text-slate-800 font-bold">退寮・帰国 (13時〜)</td>
+                <td class="text-gray-400">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[11px] text-emerald-200/70 mt-2">* image_bb69e5.png の研修イメージに基づいて作成されています。</p>
+      </div>
+    </section>
+
+    <!-- タイムラインスケジュール -->
+    <main class="relative z-10 max-w-3xl mx-auto px-4 pb-20">
+      <div class="relative">
+        <div class="timeline-line absolute left-6 md:left-8 top-0 bottom-0 rounded-full bg-gradient-to-b from-emerald-800 to-teal-400" style="width:3px;"></div>
+        
+        <!-- イベント 1 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-emerald-400 border-4 border-emerald-900 dot-pulse"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'emerald')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🤝</span>
+              <h2 class="text-xl font-bold text-gray-800">開講オリエンテーション ＆ 歓迎会</h2>
+            </div>
+            <p class="text-gray-600 text-sm">ワンキャンパスがもたらす多様な交流の始まり</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed">初日に丁寧なオリエンテーションを実施し、翌日には広大な学内ツアーを体験。夕方からはリベラルアーツ学部の学生たちとの「歓迎会」が開催され、一気に距離が縮まります。</p>
+            </div>
+            <p class="text-xs text-emerald-600 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- イベント 2 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-teal-400 border-4 border-emerald-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'emerald')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🧩</span>
+              <h2 class="text-xl font-bold text-gray-800">日本語クラス ＆ 玉川生共同ワーク</h2>
+            </div>
+            <p class="text-gray-600 text-sm">言語学習とピア・ラーニングの融合</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm mb-3">習熟度別の「日本語」講義に加え、定期的に「日本語：玉川共同」の時間を設定。現地の大学生と密にディスカッションを行い、実践的なコミュニケーション力を育みます。金曜日には実際の学部講義にも参加できます。</p>
+            </div>
+            <p class="text-xs text-emerald-600 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- イベント 3 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-amber-400 border-4 border-emerald-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'emerald')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🏃</span>
+              <h2 class="text-xl font-bold text-gray-800">都内見学 ＆ 日本の伝統文化体験</h2>
+            </div>
+            <p class="text-gray-600 text-sm">東京を舞台にした実践的な課外学習</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed">週末はバディと共に「都内見学」へ出発。さらに、日本食体験、本格的な「書道体験」や「茶道体験」など、五感で日本文化の精神性を学ぶプログラムが組み込まれています。</p>
+            </div>
+            <p class="text-xs text-emerald-600 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- イベント 4 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-rose-400 border-4 border-emerald-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'emerald')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🎤</span>
+              <h2 class="text-xl font-bold text-gray-800">発表テーマの深化 ＆ 送別会</h2>
+            </div>
+            <p class="text-gray-600 text-sm">多様な視点から導き出した成果の共有と修了</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm leading-relaxed">「自由行動：発表テーマを深める」や「発表のための取材」の時間が十分に確保されており、自発的なフィールドリサーチを形にします。最終日前夜には「送別会」が行われ、絆を深めた仲間たちと感動の修了を迎えます。</p>
+            </div>
+            <p class="text-xs text-emerald-600 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 応募セクション -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-16">
+      <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 shadow-xl text-center">
+        <div class="mb-4"><span class="text-5xl">📋</span></div>
+        <h2 class="text-2xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">プログラム申込（玉川大学）</h2>
+        <p class="text-emerald-100 mb-6">下記のボタンをクリックして公式申込フォームにアクセスし、リベラルアーツ研修への一歩を踏み出しましょう！</p>
+        <a href="https://forms.office.com/r/V5m7NF3FCa" target="_blank" rel="noopener noreferrer" class="inline-block px-8 py-3 bg-white text-emerald-700 font-bold rounded-lg hover:bg-emerald-50 transition-colors shadow-lg"> 🔗 申込フォームを開く </a>
+        <p class="text-emerald-100 text-xs mt-4">* リンクをクリックすると新しいウィンドウでフォームが開きます</p>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="relative z-10 text-center pb-10 text-emerald-300/60 text-xs">
+      <p>玉川大学 リベラルアーツ学部 ・ Tamagawa University College of Liberal Arts</p>
+    </footer>
+  </div>
+
+
+  <!-- ================================================================= -->
+  <!-- 3. 秋田国際教養大学（AIU） 詳細ページ -->
+  <!-- ================================================================= -->
+  <div id="page-aiu" class="page-section w-full h-full overflow-auto relative min-h-full" style="background: linear-gradient(135deg, #0f1f3c 0%, #1a3a6b 40%, #2d5a8e 70%, #4a7ab5 100%);">
+    
+    <!-- 雪のエフェクトコンテナ -->
+    <div id="snow-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- トップに戻る -->
+    <div class="max-w-3xl mx-auto pt-6 px-4 relative z-10">
+      <button onclick="showPage('page-home')" class="flex items-center gap-2 px-4 py-2 bg-black/30 hover:bg-black/50 text-white rounded-xl border border-white/10 transition-colors text-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> トップへ戻る
+      </button>
+    </div>
+
+    <!-- Hero -->
+    <header class="relative z-10 text-center py-12 px-4">
+      <div class="inline-block mb-4"><span class="text-5xl">❄️</span></div>
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">秋田国際教養大学研修プログラム</h1>
+      <p class="text-lg md:text-xl text-blue-200 font-light">冬期日本語・日本文化プログラム</p>
+      <div class="mt-6 flex justify-center gap-2">
+        <span class="px-3 py-1 rounded-full bg-white/10 text-blue-200 text-sm border border-white/20">🎌 グローバルキャンパス</span> 
+        <span class="px-3 py-1 rounded-full bg-white/10 text-blue-200 text-sm border border-white/20">❄️ 冬期集中型</span> 
+        <span class="px-3 py-1 rounded-full bg-white/10 text-blue-200 text-sm border border-white/20">📚 英語・日本語環境</span>
+      </div>
+    </header>
+
+    <!-- 特色紹介 -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-10">
+      <div class="bg-white/90 backdrop-blur rounded-2xl p-8 shadow-lg text-gray-800">
+        <div class="flex items-center gap-3 mb-4"><span class="text-3xl">❄️</span>
+          <h2 class="text-2xl font-bold text-gray-800" style="font-family: 'Zen Maru Gothic', sans-serif;">冬期語学・文化研修の核心</h2>
+        </div>
+        <div class="space-y-4 text-sm leading-relaxed text-gray-700">
+          <p class="text-base font-semibold text-blue-600">「白銀の世界に包まれた最先端の学舎で、<br>国際教養大学の大学院生たちと深く共に学ぶ。」</p>
+          <div class="border-l-4 border-blue-400 pl-4 py-2 bg-blue-50 rounded">
+            <p>高度にグローバル化された英語中心のキャンパスにおいて、集中講義、地域伝統文化体験、強度なバディサポートを通じて、短期間で異文化理解と学術的発信力を飛躍的に高めます。</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div class="flex items-center gap-2 text-sm"><i data-lucide="check" class="text-blue-500 w-4 h-4 flex-shrink-0"></i><span>プレテスト＆オリエンテーション</span></div>
+            <div class="flex items-center gap-2 text-sm"><i data-lucide="check" class="text-blue-500 w-4 h-4 flex-shrink-0"></i><span>1日4時限構成の集中授業</span></div>
+            <div class="flex items-center gap-2 text-sm"><i data-lucide="check" class="text-blue-500 w-4 h-4 flex-shrink-0"></i><span>男鹿・田沢湖へのバスツアー</span></div>
+            <div class="flex items-center gap-2 text-sm"><i data-lucide="check" class="text-blue-500 w-4 h-4 flex-shrink-0"></i><span> there's a file named image_bb66a5.png プレゼン・寸劇などの最終発表</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 研修日程カレンダー (秋田AIU) -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-10">
+      <div class="bg-white/95 backdrop-blur rounded-2xl p-6 shadow-xl text-gray-800">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl">📅</span>
+          <h2 class="text-xl font-bold text-gray-800" style="font-family: 'Zen Maru Gothic', sans-serif;">★ スケジュール ★</h2>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm calendar-table border-collapse">
+            <thead>
+              <tr>
+                <th class="text-rose-600 w-[14%]">日</th>
+                <th class="w-[14%]">月</th>
+                <th class="w-[14%]">火</th>
+                <th class="w-[14%]">水</th>
+                <th class="w-[14%]">木</th>
+                <th class="w-[14%]">金</th>
+                <th class="text-blue-600 w-[14%]">土</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-rose-500 font-medium py-4">1/18<br><span class="text-xs text-gray-400 block mt-1">-</span></td>
+                <td class="bg-blue-50/50 py-4">1/19<br><span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold mt-1">秋田着 ✈️</span></td>
+                <td class="bg-emerald-50/50 py-4">1/20<br><span class="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded-full font-semibold mt-1">開講式</span></td>
+                <td class="bg-amber-50/40 py-4">1/21<br><span class="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full mt-1">授業</span></td>
+                <td class="bg-amber-50/40 py-4">1/22<br><span class="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full mt-1">授業</span></td>
+                <td class="bg-orange-50/50 py-4">1/23<br><span class="inline-block px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full font-semibold mt-1">バスツアー 👹</span></td>
+                <td class="text-blue-500 font-medium py-4">1/24<br><span class="text-xs text-gray-400 block mt-1">-</span></td>
+              </tr>
+              <tr>
+                <td class="text-rose-500 bg-amber-50/40 py-4">1/25<br><span class="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full mt-1">授業</span></td>
+                <td class="bg-orange-50/50 py-4">1/26<br><span class="inline-block px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full font-semibold mt-1">バスツアー 🏔️</span></td>
+                <td class="bg-amber-50/40 py-4">1/27<br><span class="inline-block px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full mt-1">授業</span></td>
+                <td class="bg-purple-50/50 py-4">1/28<br><span class="inline-block px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-full font-semibold mt-1">最終発表 🎤</span></td>
+                <td class="bg-slate-50 py-4">1/29<br><span class="inline-block px-2 py-0.5 bg-slate-200 text-slate-800 text-xs rounded-full mt-1">閉講式</span></td>
+                <td class="bg-slate-50 py-4">1/30<br><span class="inline-block px-2 py-0.5 bg-slate-600 text-white text-xs rounded-full font-semibold mt-1">秋田発 👋</span></td>
+                <td class="text-blue-500 font-medium py-4">1/31<br><span class="text-xs text-gray-400 block mt-1">-</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- タイムラインスケジュール -->
+    <main class="relative z-10 max-w-3xl mx-auto px-4 pb-20">
+      <div class="relative">
+        <div class="timeline-line absolute left-6 md:left-8 top-0 bottom-0 rounded-full bg-gradient-to-b from-blue-900 via-blue-400 to-sky-300" style="width: 3px;"></div>
+
+        <!-- スケジュール 1 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-emerald-400 border-4 border-blue-900 dot-pulse"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'blue')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🌱</span>
+              <h2 class="text-xl font-bold text-gray-800">開講式 (1/20)</h2>
+            </div>
+            <p class="text-gray-600 text-sm">コースや秋田の生活について説明します。</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <ul class="space-y-2 text-sm text-gray-700">
+                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>プレテスト (実力判定)</li>
+                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>オリエンテーション</li>
+                <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>キャンパス案内</li>
+              </ul>
+            </div>
+            <p class="text-xs text-blue-400 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- スケジュール 2 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-amber-400 border-4 border-blue-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'blue')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">📖</span>
+              <h2 class="text-xl font-bold text-gray-800">授業 (1/21, 1/22, 1/25, 1/27)</h2>
+            </div>
+            <p class="text-gray-600 text-sm">複数のクラスに分かれて集中的に学びます。</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm mb-3 font-semibold text-amber-700">【デイリースケジュール】</p>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-amber-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-amber-600 font-semibold">1限</p>
+                  <p class="text-sm font-bold text-gray-800">9:00 - 9:50</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-amber-600 font-semibold">2限</p>
+                  <p class="text-sm font-bold text-gray-800">10:00 - 10:50</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-amber-600 font-semibold">3限</p>
+                  <p class="text-sm font-bold text-gray-800">11:00 - 11:50</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-amber-600 font-semibold">4限</p>
+                  <p class="text-sm font-bold text-gray-800">13:00 - 13:50</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs text-blue-400 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- スケジュール 3 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-orange-400 border-4 border-blue-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'blue')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🚌</span>
+              <h2 class="text-xl font-bold text-gray-800">バスツアー (1/23, 1/26)</h2>
+            </div>
+            <p class="text-gray-600 text-sm">教室の外に出て、秋田の豊かな文化を体験しよう！</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 bg-orange-50 rounded-lg p-3">
+                  <span class="text-xl">👹</span>
+                  <div>
+                    <p class="font-bold text-gray-800 text-sm">1月23日：男鹿 (Oga)</p>
+                    <p class="text-xs text-gray-500">伝統的な「なまはげ」文化や厳しい冬の自然を体感します。</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 bg-orange-50 rounded-lg p-3">
+                  <span class="text-xl">🏔️</span>
+                  <div>
+                    <p class="font-bold text-gray-800 text-sm">1月26日：田沢湖・角館</p>
+                    <p class="text-xs text-gray-500">日本一深い神秘の湖と、美しい武家屋敷の雪景色を巡ります。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs text-blue-400 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+        <!-- スケジュール 4 -->
+        <div class="timeline-card card-enter relative pl-16 md:pl-20 mb-10">
+          <div class="absolute left-4 md:left-6 top-6 w-5 h-5 rounded-full bg-purple-400 border-4 border-blue-900"></div>
+          <div class="hover-lift bg-white/95 backdrop-blur rounded-2xl p-6 shadow-lg cursor-pointer text-gray-800" onclick="toggleDetail(this, 'blue')">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-2xl">🏆</span>
+              <h2 class="text-xl font-bold text-gray-800">最終発表 (1/28)</h2>
+            </div>
+            <p class="text-gray-600 text-sm">全てのクラスが合同で成果を披露します。</p>
+            <div class="detail hidden mt-4 pt-4 border-t border-gray-100">
+              <p class="text-gray-700 text-sm mb-3">研修の集大成として、ユニークで多角的な視点からクリエイティブに発表を行います：</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-2.5 py-1.5 bg-purple-50 text-purple-700 rounded text-xs font-medium">📊 プレゼン</span> 
+                <span class="px-2.5 py-1.5 bg-purple-50 text-purple-700 rounded text-xs font-medium">🎭 寸劇 (劇)</span> 
+                <span class="px-2.5 py-1.5 bg-purple-50 text-purple-700 rounded text-xs font-medium">🎬 動画発表 など</span>
+              </div>
+            </div>
+            <p class="text-xs text-blue-400 mt-2">クリックで詳細を表示 ↓</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- 応募セクション -->
+    <section class="relative z-10 max-w-3xl mx-auto px-4 mb-16">
+      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-8 shadow-xl text-center">
+        <div class="mb-4"><span class="text-5xl">📋</span></div>
+        <h2 class="text-2xl font-bold text-white mb-3" style="font-family: 'Zen Maru Gothic', sans-serif;">プログラム申込（秋田国際教養大学）</h2>
+        <p class="text-blue-100 mb-6">下記のボタンをクリックして公式申込フォームにアクセスし、グローバルキャンパスでの挑戦を始めましょう！</p>
+        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=-zKSOdEXykW9pltUBEG9YtCkymERAyRCqTy3jI3Lh3VUN1dRVDZGVEpNRDA1M1dNU0I0OVJDMEw5MyQlQCN0PWcu" target="_blank" rel="noopener noreferrer" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-colors shadow-lg"> 🔗 申込フォームを開く </a>
+        <p class="text-blue-100 text-xs mt-4">* リンクをクリックすると新しいウィンドウで公式フォームが開きます</p>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="relative z-10 text-center pb-10 text-blue-300/60 text-xs">
+      <p>秋田国際教養大学 ・ Akita International University</p>
+    </footer>
+  </div>
+
+
+  <!-- ================================================================= -->
+  <!-- コントロールスクリプト -->
+  <!-- ================================================================= -->
+  <script>
+    // 1. Lucideアイコンの初期化
+    lucide.createIcons();
+
+    // 2. ページ切り替え処理
+    function showPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        targetPage.scrollTop = 0; // 朝の表示に備えて最上部へ
+        
+        // アニメーションの再チェック
+        checkScrollAnimations();
+      }
+    }
+
+    // 3. アコーディオン（詳細）の開閉処理
+    function toggleDetail(el, theme) {
+      const detail = el.querySelector('.detail');
+      const hint = el.querySelector('.text-blue-400, .text-emerald-600');
+      if (!detail) return;
+
+      if (detail.classList.contains('hidden')) {
+        detail.classList.remove('hidden');
+        if (hint) {
+          hint.textContent = 'クリックで詳細を閉じる ↑';
+        }
+      } else {
+        detail.classList.add('hidden');
+        if (hint) {
+          hint.textContent = 'クリックで詳細を表示 ↓';
+        }
+      }
+    }
+
+    // 4. 雪のエフェクト（秋田AIUページ用）
+    function createSnow() {
+      const container = document.getElementById('snow-container');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 30; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'snow';
+        flake.textContent = '❄';
+        flake.style.left = Math.random() * 100 + '%';
+        flake.style.fontSize = (Math.random() * 12 + 8) + 'px';
+        flake.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        flake.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(flake);
+      }
+    }
+    createSnow();
+
+    // 5. スクロールアニメーションの監視 (IntersectionObserver)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { 
+        if (e.isIntersecting) e.target.classList.add('card-visible'); 
+      });
+    }, { threshold: 0.1 });
+
+    function checkScrollAnimations() {
+      document.querySelectorAll('.timeline-card').forEach(c => observer.observe(c));
+    }
+    checkScrollAnimations();
+
+    // ページロード時にトップページを初期表示
+    window.addEventListener('DOMContentLoaded', () => {
+      showPage('page-home');
+    });
+  </script>
+ </body>
+</html>
